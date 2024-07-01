@@ -6,6 +6,22 @@ import os
 import anthropic
 # from anthropic import Anthropic
 
+  """_summary_
+    Args:
+        file_path (_type_): _description_
+        output_file (_type_): _description_
+        headers (_type_, optional): _description_. Defaults to None.
+  Returns:
+      _type_: _description_
+
+      file_path:
+      'r' for reading the file
+
+      mode:
+      'a' for appending to the file
+      'w' for overwriting the file
+  """
+
 # set up the API key
 if not os.getenv("ANTHROPIC_API_KEY"):
   os.environ["ANTHROPIC_API_KEY"] = input("Enter your API key: ")
@@ -22,3 +38,14 @@ def read_csv(file_path):
     for row in csv_reader:
       data.append(row)
   return data
+
+# function to save the generated data to a new CSV file
+def save_csv(data, output_file, headers=None):
+  mode = 'w' if headers else 'a'
+  with open(output_file, mode, newline='') as f:
+    writer = csv.writer(f)
+    if headers:
+      writer.writerow(headers)
+    for row in csv.reader(data.splitlines()):
+      writer.writerow(row)
+
