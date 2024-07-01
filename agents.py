@@ -4,6 +4,7 @@
 import csv
 import os
 import anthropic
+from prompts import *
 # from anthropic import Anthropic
 
   """_summary_
@@ -27,7 +28,7 @@ if not os.getenv("ANTHROPIC_API_KEY"):
   os.environ["ANTHROPIC_API_KEY"] = input("Enter your API key: ")
 
 # create Anthropic client
-client = anthropic.Anthropic())
+client = anthropic.Anthropic()
 sonnet = "claude-3-5-sonnet-20240620"
 
 # function for reading the CSV file
@@ -49,3 +50,17 @@ def save_csv(data, output_file, headers=None):
     for row in csv.reader(data.splitlines()):
       writer.writerow(row)
 
+def analyzer_agent(sample_data):
+  message = client.messages.create(
+    model="claude-3-5-sonnet-20240620",
+    max_tokens=400,
+    temperature=0.1,
+    system=ANALYZER_SYSTEM_PROMPT,
+    messages=[
+      {
+        role: "user",
+        content: ANALYZER_USER_PROMPT.format(sample_data=sample_data)
+      }
+    ]
+  )
+  return message.content[0].text
